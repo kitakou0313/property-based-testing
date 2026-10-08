@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 def reverse(xs: list[int]) -> list[int]:
     return xs[::-1]
 
@@ -15,3 +17,6 @@ def invalid_search_maximum_item(xs: list[int]) -> int:
 
 def my_sort(xs: list[int]) -> list[int]:
     return sorted(xs)
+
+def key_sort(tuples:list[tuple], n:int, ) -> list[tuple]:
+    return sorted(tuples, key=itemgetter(n))

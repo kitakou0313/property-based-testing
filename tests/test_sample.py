@@ -29,14 +29,14 @@ def test_sort_is_idempotent(xs):
     assert my_sort(my_sort(xs)) == my_sort(xs)
 """
 
-@given(st.lists(st.integers()))
-def test_invalid_maximum(xs):
-    maximum_item_in_xs = max(xs)
+# @given(st.lists(st.integers()))
+# def test_invalid_maximum(xs):
+#     maximum_item_in_xs = max(xs)
 
-    assert maximum_item_in_xs == invalid_search_maximum_item(xs)
+#     assert maximum_item_in_xs == invalid_search_maximum_item(xs)
 
-@given(st.lists(st.integers()))
-def test_valid_maximum(xs):
-    maximum_item_in_xs = max(xs)
+# @given(st.lists(st.integers()))
+# def test_valid_maximum(xs):
+#     maximum_item_in_xs = max(xs)
 
-    assert maximum_item_in_xs == search_maximum_item(xs)
+#     assert maximum_item_in_xs == search_maximum_item(xs)

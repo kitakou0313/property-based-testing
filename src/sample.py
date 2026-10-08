@@ -18,5 +18,7 @@ def invalid_search_maximum_item(xs: list[int]) -> int:
 def my_sort(xs: list[int]) -> list[int]:
     return sorted(xs)
 
-def key_sort(tuples:list[tuple], n:int, ) -> list[tuple]:
+def key_sort_int_tuple(tuples:list[tuple[int]], n:int, ) -> list[tuple[int]]:
+    if n < 0 or len(tuples)-1 < n:
+        raise ValueError("Index out of range")
     return sorted(tuples, key=itemgetter(n))

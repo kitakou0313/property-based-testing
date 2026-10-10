@@ -27,3 +27,10 @@ def test_key_sort(tuples_list:list[tuple], key_number:int):
 
     for i in range(len(sorted_tuples_list) - 1):
         assert sorted_tuples_list[i][key_number] <= sorted_tuples_list[i+1][key_number]
+
+
+@given(tuples_list=st.lists(st.tuples(st.integers())), key_number=st.integers())
+def test_key_sort_always_return_tuple(tuples_list:list[tuple], key_number:int):
+    returned_list = key_sort_int_tuple(tuples_list, key_number)
+
+    assert type(returned_list) == tuple

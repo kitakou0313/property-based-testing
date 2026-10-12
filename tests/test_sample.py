@@ -45,26 +45,14 @@ def test_sort_is_idempotent(xs):
 # pytest --hypothesis-show-statistics で分布を確認できる
 # 空リストでは max() が ValueError になるため min_size=1 を指定する
 @given(st.lists(st.integers(), min_size=1))
-def test_valid_maximum_with_statistics(xs):
-    maximum_item_in_xs = max(xs)
+def test_search_maximum_item_with_statistics(xs):
+    max_item_in_list = max(xs)
 
     if len(xs) == 1:
         event("length: 1")
     elif len(xs) <= 10:
-        event("length: 2-10")
+        event("length: 20 ~ 10")
     else:
-        event("length: 11+")
+        event("length: 11 ~ ")
 
-    if maximum_item_in_xs > 0:
-        event("maximum: positive")
-    elif maximum_item_in_xs == 0:
-        event("maximum: zero")
-    else:
-        event("maximum: negative")
-
-    if xs[0] == maximum_item_in_xs:
-        event("maximum at first position")
-    if xs.count(maximum_item_in_xs) > 1:
-        event("maximum is duplicated")
-
-    assert maximum_item_in_xs == search_maximum_item(xs)
+    assert search_maximum_item(xs=xs) == max_item_in_list

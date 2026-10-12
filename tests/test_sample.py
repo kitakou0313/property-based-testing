@@ -44,6 +44,25 @@ def test_sort_is_idempotent(xs):
 # test_valid_maximum に統計情報(event)を追加したもの
 # pytest --hypothesis-show-statistics で分布を確認できる
 # 空リストでは max() が ValueError になるため min_size=1 を指定する
+
+"""
+結果について、以下のようになる
+```
+tests/test_sample.py::test_search_maximum_item_with_statistics:
+
+  - during generate phase (0.04 seconds):
+    - Typical runtimes: < 1ms, of which < 1ms in data generation
+    - 100 passing, 0 failing, and 22 invalid test cases
+    - Events:
+      * 49.18%, length: 20 ~ 10
+      * 18.03%, length: 11 ~ 
+      * 14.75%, length: 1
+
+  - Stopped because settings.max_examples=100
+```
+ここで言われているinvalid test caseはテストケースの最大値を超過していたケース（今回は max_examples=100 ）を指す
+この時はそもそもテストが実行されていない テストが失敗したケースは failing の部分にカウントされる
+"""
 @given(st.lists(st.integers(), min_size=1))
 def test_search_maximum_item_with_statistics(xs):
     max_item_in_list = max(xs)

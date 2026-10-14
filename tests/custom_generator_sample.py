@@ -7,6 +7,13 @@ import pytest
 テストケースの変換(LET相当)
 st.map関数を使う
 """
+def is_divisible_by_10(value:int) -> bool:
+    return value % 10 == 0
+
+@given(st.integers().map(lambda x: x*11))
+def test_is_divisible_by_10(value:int):
+    assert is_divisible_by_10(value=value)
+
 
 """
 テストケースのfiltering(SUCHTHAT相当)

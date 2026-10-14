@@ -20,9 +20,9 @@ st.compositeを使ってgeneratorを作る
 @st.composite
 def generate_tuples_list_and_range_error_key(draw:DrawFn):
     xs = draw(
-        st.lists(st.tuples(st.integers(), st.integers(), st.integers()))
+        st.lists(st.tuples(st.integers(), st.integers(), st.integers()), min_size=1)
     )
-    outrange_key_number = draw(st.integers(min_value=len(xs)))
+    outrange_key_number = draw(st.integers(min_value=len(xs[0])))
 
     return xs, outrange_key_number
 

@@ -21,15 +21,14 @@ def generate_csv_field(drawn:st.DrawFn):
 
     # 1行当たりのデータを生成
     # 辞書型、与えられたキーに
-    def entry(keys:list[str],column_num:int) -> dict[str, str]:
-        records = drawn(record(column_num))
-        return dict(zip(keys, records))
+    def entry(keys:list[str],column_num:int) -> st.SearchStrategy[dict[str, str]]:
+        return record(column_num).map(lambda values: dict(zip(keys, values)))
 
-    column_num = drawn(st.integers())
+    column_num = drawn(st.integers(min_value=1, max_value=100))
     header_list = drawn(header(column_num))
-    return st.lists(entry(header_list, column_num))
+    return drawn(st.lists(entry(header_list, column_num)))
 
 @settings(max_examples=100)
 @given(generate_csv_field())
-def test_validate_generator(xs:str):
-    event(xs)
+def test_validate_generator(xs:list[dict[str, str]]):
+    event()

@@ -24,11 +24,12 @@ def generate_csv_field(drawn:st.DrawFn):
     def entry(keys:list[str],column_num:int) -> st.SearchStrategy[dict[str, str]]:
         return record(column_num).map(lambda values: dict(zip(keys, values)))
 
-    column_num = drawn(st.integers(min_value=1, max_value=100))
+    column_num = drawn(st.integers(min_value=1, max_value=3))
     header_list = drawn(header(column_num))
     return drawn(st.lists(entry(header_list, column_num)))
 
-@settings(max_examples=100)
+@settings(max_examples=1000)
 @given(generate_csv_field())
 def test_validate_generator(xs:list[dict[str, str]]):
-    event()
+    for line in xs:
+        event(str(line.keys()) + ":" + str(line.values()))

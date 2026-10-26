@@ -12,23 +12,20 @@ def test_unit_test_case():
     assert trg_function(["F", "B", "C"], {"F":5, "B":10, "C":100}, {}) == 115
 
 ## 上記をPropertyにする
+## ポジティブテスト（エッジケースを考慮せず、正しい挙動を検討するためのテスト）
 @st.composite
 def generate(draw:DrawFn):
-    item_types_list = draw(st.lists(st.text()))
-    unit_prices = st.dictionaries(keys=st.text(), values=st.integers()) # ほぼ存在しないitemのpriceになる 要修正
-    return item_types_list, unit_prices, {}
+    unit_prices = draw(st.dictionaries(keys=st.text(), values=st.integers())) # ほぼ存在しないitemのpriceになる 要修正
+    bought_items_list = draw(st.lists(st.sampled_from([key for key in unit_prices.keys()])))
+
+    expected_total_price = 0
+    for bought_item in bought_items_list:
+        expected_total_price += unit_prices[bought_item]
+
+    return bought_items_list, unit_prices, {}, expected_total_price 
 
 
 @given(generate())
-def test_trg_function_with_pbt(bought_items_list:list[str], unit_pricies:dict[str, int], special_pricies:dict[str, int]):
-    item_type_and_counts = {}
-    for item in bought_items_list:
-        if item not in item_type_and_counts:
-            item_type_and_counts[item] = 0
-        item_type_and_counts[item] += 1
+def test_trg_function_with_pbt(bought_items_list:list[str], unit_pricies:dict[str, int], special_pricies:dict[str, int], expected_price:int):
 
-    summary_price = 0
-    for item_type in item_type_and_counts:
-        summary_price += item_type_and_counts[item_type] * unit_pricies[item_type]
-
-    assert summary_price == trg_function(bought_items_list=bought_items_list, unit_pricies=unit_pricies, special_pricies=special_pricies)
+    assert expected_price == trg_function(bought_items_list=bought_items_list, unit_pricies=unit_pricies, special_pricies=special_pricies)

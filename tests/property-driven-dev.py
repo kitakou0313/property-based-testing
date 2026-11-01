@@ -80,12 +80,14 @@ def generator_item_list_with_special_price(draw:DrawFn):
     price_from_only_without_special_price = 0
     bought_item_list_from_only_without_special_price:list[str] = []
     for item in item_and_price_dict.keys():
-        bought_count_of_items = draw(st.integers(min_value=0, max_value=items_with_special_price_and_count_dict[item].need_count - 1))
+        bought_count_of_items = draw(st.integers(max_value=items_with_special_price_and_count_dict[item].need_count - 1)) if item in items_with_special_price_and_count_dict else draw(st.integers())
         price_from_only_without_special_price += items_with_special_price_and_count_dict[item].special_price * bought_count_of_items
         bought_item_list_from_only_without_special_price += [item] * bought_count_of_items
 
     # 二つのケースの購入リスト、金額をマージして返す
-    return random.shuffle(bought_item_list_from_only_special_price + bought_item_list_from_only_without_special_price), \
+    merged_bought_item_list = bought_item_list_from_only_special_price + bought_item_list_from_only_without_special_price 
+    random.shuffle(merged_bought_item_list)
+    return merged_bought_item_list, \
         item_and_price_dict, \
         items_with_special_price_and_count_dict, \
         price_from_only_special_price + price_from_only_without_special_price

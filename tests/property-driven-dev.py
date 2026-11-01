@@ -8,10 +8,19 @@ class SpecialPriceAndNeedCount():
         self.need_count = need_count
 
 def trg_function(bought_items_list:list[str], unit_pricies:dict[str, int], special_pricies:dict[str, SpecialPriceAndNeedCount]) -> int:
-    summary_price = 0
+    item_type_to_bought_count: dict[str, int] = {}
+    for item_type in bought_items_list:
+        if item_type not in item_type_to_bought_count:
+            item_type_to_bought_count[item_type] = 0
+        item_type_to_bought_count[item_type] += 1
 
-    for bought_item in bought_items_list:
-        summary_price += unit_pricies[bought_item]
+    summary_price = 0
+    for item_type in item_type_to_bought_count:
+        if item_type in special_pricies:
+            summary_price += (item_type_to_bought_count[item_type] // special_pricies[item_type].need_count) * special_pricies[item_type].special_price
+            summary_price += (item_type_to_bought_count[item_type] % special_pricies[item_type].need_count) * unit_pricies[item_type]
+        else:
+            summary_price += item_type_to_bought_count[item_type] * unit_pricies[item_type]
 
     return summary_price
 
@@ -39,7 +48,7 @@ def generate(draw:DrawFn):
 
 
 @given(generate())
-def test_trg_function_with_pbt(custom_generator:tuple[list[str], dict[str, int], dict[str, SpecialPriceAndNeedCount], int]):
+def test_trg_function_without_special_price(custom_generator:tuple[list[str], dict[str, int], dict[str, SpecialPriceAndNeedCount], int]):
     bought_items_list, unit_pricies, special_pricies, expected_price = custom_generator
     event("item count", len(bought_items_list))
     event("avg unit prices", sum([price for price in unit_pricies.values()]) // len(unit_pricies))
@@ -80,3 +89,10 @@ def generator_item_list_with_special_price(draw:DrawFn):
         item_and_price_dict, \
         items_with_special_price_and_count_dict, \
         price_from_only_special_price + price_from_only_without_special_price
+
+@given(generator_item_list_with_special_price())
+def test_trg_function_with_special_price(custom_generator:tuple[list[str], dict[str, int], dict[str, SpecialPriceAndNeedCount], int]):
+    bought_items_list, unit_pricies, special_pricies, expected_price = custom_generator
+    event("item count", len(bought_items_list))
+    event("avg unit prices", sum([price for price in unit_pricies.values()]) // len(unit_pricies))
+    assert expected_price == trg_function(bought_items_list=bought_items_list, unit_pricies=unit_pricies, special_pricies=special_pricies)
